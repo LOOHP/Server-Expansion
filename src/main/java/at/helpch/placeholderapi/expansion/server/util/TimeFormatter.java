@@ -145,9 +145,11 @@ public final class TimeFormatter {
             return "invalid date format";
         }
 
+        DateTimeFormatter zonedFormatter = formatter.withZone(timeZone);
+
         try {
             ZonedDateTime now = ZonedDateTime.now(timeZone);
-            ZonedDateTime otherDate = ZonedDateTime.parse(otherDateString, formatter);
+            ZonedDateTime otherDate = ZonedDateTime.parse(otherDateString, zonedFormatter);
 
             if (otherDate.isEqual(now)) {
                 return "0";
@@ -162,7 +164,7 @@ public final class TimeFormatter {
             return formatTime ? this.formatTimeInSeconds(time) : String.valueOf(time);
         } catch (DateTimeParseException e) {
             final String type = isCountdown ? "countdown" : "count-up";
-            Logging.error(e, "Could not calculate {0} (format: \"{1}\", other date: \"{2}\")", type, formatter.toString(), otherDateString);
+            Logging.error(e, "Could not calculate {0} (format: \"{1}\", other date: \"{2}\")", type, zonedFormatter.toString(), otherDateString);
             return "invalid date";
         }
     }
